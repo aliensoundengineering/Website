@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Alien Sound Engineering - Open Source Sound Tools for the EDM Community">
+    <meta name="theme-color" content="#202020">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ASE // Alien Sound Engineering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Scanline overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Navigation Menu (for non-technical users) -->
+    <nav class="floating-menu" id="floatingMenu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <span class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </button>
+        <ul class="menu-items" id="menuItems">
+            <li><a href="#" data-section="home">HOME</a></li>
+            <li><a href="#" data-section="synth">SYNTH.01</a></li>
+            <li><a href="#" data-section="tracks">TRACKS</a></li>
+            <li><a href="#" data-section="manifesto">MANIFESTO</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Terminal Container -->
+    <div class="terminal-wrapper">
+        <div class="terminal-container">
+            <!-- Terminal Header -->
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="btn-close"></span>
+                    <span class="btn-minimize"></span>
+                    <span class="btn-maximize"></span>
+                </div>
+                <div class="terminal-title">ase@terminal: ~</div>
+                <div class="terminal-header-spacer"></div>
+            </div>
+
+            <!-- Terminal Body -->
+            <div class="terminal-body" id="terminalBody">
+                <!-- Output Area - This scrolls -->
+                <div class="output-area" id="outputArea">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+
+                <!-- Command Input - Fixed at bottom -->
+                <div class="command-line" id="commandLine">
+                    <span class="prompt">$</span>
+                    <input type="text" class="command-input" id="commandInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type 'help' for commands...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glitch overlay for effects -->
+    <div class="glitch-overlay" id="glitchOverlay"></div>
+
+    <!-- Boot screen -->
+    <div class="boot-screen" id="bootScreen">
+        <div class="boot-content">
+            <div class="boot-logo">
+                <pre>───────────  ::ασε~  ──
+alien sound engineering</pre>
+            </div>
+            <div class="boot-text" id="bootText"></div>
+            <div class="boot-progress">
+                <div class="boot-progress-bar" id="bootProgressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

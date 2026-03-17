@@ -1,0 +1,837 @@
+/* ═══════════════════════════════════════════════════════════════
+   ALIEN SOUND ENGINEERING - Terminal Style Website
+   Fully Responsive with Real Terminal Behavior
+   ═══════════════════════════════════════════════════════════════ */
+
+/* CSS Variables */
+:root {
+    --bg-color: #202020;
+    --text-color: #e5e5e5;
+    --accent-color: #ffd112;
+    --accent-glow: rgba(255, 209, 18, 0.5);
+    --accent-dim: rgba(255, 209, 18, 0.3);
+    --terminal-bg: #0a0a0a;
+    --terminal-header: #1a1a1a;
+    --border-color: #333;
+    --success-color: #00ff88;
+    --error-color: #ff4444;
+    --font-mono: 'JetBrains Mono', 'Courier New', Courier, monospace;
+}
+
+/* Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Prevent body scroll - terminal handles all scrolling */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCANLINES
+   ═══════════════════════════════════════════════════════════════ */
+
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING MENU
+   ═══════════════════════════════════════════════════════════════ */
+
+.floating-menu {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 900;
+}
+
+.menu-toggle {
+    width: 44px;
+    height: 44px;
+    background: var(--terminal-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.menu-toggle:hover,
+.menu-toggle:focus {
+    background: rgba(255, 209, 18, 0.1);
+    box-shadow: 0 0 15px var(--accent-glow);
+    outline: none;
+}
+
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-icon span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent-color);
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.menu-toggle.active .menu-icon span:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 4px);
+}
+
+.menu-toggle.active .menu-icon span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.menu-toggle.active .menu-icon span:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -4px);
+}
+
+.menu-items {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: var(--terminal-bg);
+    border: 1px solid var(--accent-color);
+    list-style: none;
+    min-width: 160px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.6);
+}
+
+.menu-items.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-items li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.menu-items li:last-child {
+    border-bottom: none;
+}
+
+.menu-items a {
+    display: block;
+    padding: 12px 16px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.menu-items a::before {
+    content: '> ';
+    color: var(--accent-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.menu-items a:hover,
+.menu-items a:focus {
+    background: rgba(255, 209, 18, 0.15);
+    color: var(--accent-color);
+    outline: none;
+}
+
+.menu-items a:hover::before,
+.menu-items a:focus::before {
+    opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TERMINAL LAYOUT - FIXED HEIGHT, INTERNAL SCROLL
+   ═══════════════════════════════════════════════════════════════ */
+
+.terminal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.terminal-container {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px var(--border-color),
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        0 0 100px rgba(255, 209, 18, 0.05);
+    animation: terminalAppear 0.5s ease;
+}
+
+@keyframes terminalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Terminal Header - macOS style */
+.terminal-header {
+    background: linear-gradient(180deg, #2d2d2d 0%, var(--terminal-header) 100%);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    min-height: 38px;
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.terminal-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+    transition: opacity 0.2s ease;
+}
+
+.terminal-buttons span:hover {
+    opacity: 0.8;
+}
+
+.btn-close { background: #ff5f57; }
+.btn-minimize { background: #febc2e; }
+.btn-maximize { background: #28c840; }
+
+.terminal-title {
+    flex: 1;
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.terminal-header-spacer {
+    width: 52px;
+    flex-shrink: 0;
+}
+
+/* Terminal Body - Flex column with scrolling output */
+.terminal-body {
+    flex: 1;
+    background: var(--terminal-bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0; /* Important for flex child scrolling */
+}
+
+/* Output Area - SCROLLABLE */
+.output-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    min-height: 0; /* Important for flex child scrolling */
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+.output-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.output-area::-webkit-scrollbar-track {
+    background: var(--terminal-bg);
+}
+
+.output-area::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.output-area::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* Command Line - FIXED at bottom */
+.command-line {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.prompt {
+    color: var(--accent-color);
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.command-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    outline: none;
+    min-width: 0; /* Allow shrinking */
+}
+
+.command-input::placeholder {
+    color: #555;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OUTPUT CONTENT STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.output-line {
+    margin-bottom: 4px;
+    word-wrap: break-word;
+    animation: lineIn 0.15s ease;
+}
+
+@keyframes lineIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.output-line.command {
+    color: #888;
+    margin-top: 12px;
+}
+
+.output-line.command .cmd-text {
+    color: var(--text-color);
+}
+
+.output-line.error {
+    color: var(--error-color);
+}
+
+.output-line.success {
+    color: var(--success-color);
+}
+
+.output-line.dim {
+    color: #666;
+}
+
+/* Section content */
+.section {
+    margin: 8px 0 16px 0;
+}
+
+.section-header {
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.hl {
+    color: var(--accent-color);
+}
+
+.bold {
+    font-weight: bold;
+}
+
+/* ASCII Art */
+.ascii {
+    color: var(--accent-color);
+    line-height: 1.1;
+    white-space: pre;
+    overflow-x: auto;
+    font-size: 11px;
+    margin: 12px 0;
+    font-family: var(--font-mono);
+}
+
+.ascii.small {
+    font-size: 9px;
+}
+
+.ascii.white {
+    color: var(--text-color);
+}
+
+/* Lists */
+.list-item {
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+}
+
+.list-item::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+}
+
+/* Table */
+.table-row {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    padding: 6px 0;
+}
+
+.table-row.header {
+    color: var(--accent-color);
+    font-weight: bold;
+    border-bottom: 1px solid var(--accent-dim);
+}
+
+.table-cell {
+    flex: 1;
+    padding-right: 8px;
+}
+
+.table-cell:first-child {
+    flex: 0 0 40%;
+}
+
+/* Progress bar */
+.progress-container {
+    margin: 12px 0;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--accent-glow));
+    animation: progressGlow 2s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Coming soon badge */
+.badge {
+    display: inline-block;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 8px;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Logo in terminal */
+.logo {
+    text-align: left;
+    margin: 16px 0;
+}
+
+.logo pre {
+    display: inline-block;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-glow);
+    font-size: 14px;
+    line-height: 1.3;
+    font-family: var(--font-mono);
+    animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+.logo .subtitle {
+    color: var(--text-color);
+    text-shadow: none;
+    letter-spacing: normal;
+    font-size: inherit;
+    display: block;
+}
+
+@keyframes logoGlow {
+    from {
+        text-shadow: 0 0 10px var(--accent-glow);
+    }
+    to {
+        text-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(255, 209, 18, 0.3);
+    }
+}
+
+/* Divider */
+.divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 16px 0;
+}
+
+/* Box */
+.box {
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    margin: 12px 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.box.accent {
+    border-color: var(--accent-dim);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLITCH EFFECT
+   ═══════════════════════════════════════════════════════════════ */
+
+.glitch-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+    opacity: 0;
+}
+
+.glitch-overlay.active {
+    animation: glitch 0.2s ease;
+}
+
+@keyframes glitch {
+    0%, 100% { opacity: 0; }
+    10% {
+        opacity: 0.5;
+        background: linear-gradient(90deg, transparent, rgba(255,209,18,0.1), transparent);
+        transform: translateX(-2px);
+    }
+    30% {
+        opacity: 0.3;
+        transform: translateX(2px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateX(-1px);
+    }
+    70% {
+        opacity: 0.2;
+        transform: translateX(1px);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOT SCREEN
+   ═══════════════════════════════════════════════════════════════ */
+
+.boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-color);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+
+.boot-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.boot-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.boot-logo pre {
+    color: var(--accent-color);
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 24px;
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.boot-text {
+    color: var(--text-color);
+    font-size: 12px;
+    min-height: 60px;
+    margin-bottom: 20px;
+}
+
+.boot-progress {
+    width: 200px;
+    height: 3px;
+    background: var(--border-color);
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.boot-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE - TABLET
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    html, body {
+        font-size: 13px;
+    }
+
+    .terminal-wrapper {
+        padding: 0;
+    }
+
+    .terminal-container {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+
+    .terminal-header {
+        border-radius: 0;
+    }
+
+    .floating-menu {
+        top: 8px;
+        right: 8px;
+    }
+
+    .menu-toggle {
+        width: 40px;
+        height: 40px;
+    }
+
+    .output-area {
+        padding: 12px;
+    }
+
+    .command-line {
+        padding: 10px 12px;
+    }
+
+    .ascii {
+        font-size: 9px;
+    }
+
+    .ascii.small {
+        font-size: 7px;
+    }
+
+    .logo pre {
+        font-size: 12px;
+    }
+
+    .logo .subtitle {
+        font-size: inherit;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE - MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+    html, body {
+        font-size: 12px;
+    }
+
+    .terminal-buttons span {
+        width: 10px;
+        height: 10px;
+    }
+
+    .terminal-title {
+        font-size: 11px;
+    }
+
+    .terminal-header-spacer {
+        width: 40px;
+    }
+
+    .menu-items {
+        min-width: 140px;
+    }
+
+    .menu-items a {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .output-area {
+        padding: 10px;
+    }
+
+    .command-input {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+
+    .ascii {
+        font-size: 7px;
+    }
+
+    .ascii.small {
+        font-size: 6px;
+    }
+
+    .logo pre {
+        font-size: 10px;
+    }
+
+    .logo .subtitle {
+        font-size: inherit;
+    }
+
+    .table-row {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .table-cell:first-child {
+        flex: 1;
+        color: var(--accent-color);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE LANDSCAPE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-height: 500px) {
+    .logo {
+        margin: 8px 0;
+    }
+
+    .logo pre {
+        font-size: 10px;
+    }
+
+    .section {
+        margin: 6px 0 12px 0;
+    }
+
+    .ascii {
+        margin: 8px 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOUCH IMPROVEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (hover: none) and (pointer: coarse) {
+    .menu-items a:hover::before {
+        opacity: 0;
+    }
+
+    .menu-items a:active {
+        background: rgba(255, 209, 18, 0.2);
+    }
+
+    .scanlines {
+        opacity: 0.2;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HIGH DPI SCREENS
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .terminal-buttons span {
+        box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.2);
+    }
+}
