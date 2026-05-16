@@ -2,84 +2,304 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Alien Sound Engineering - Open Source Sound Tools for the EDM Community">
-    <meta name="theme-color" content="#202020">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alien Sound Engineering builds text-first sonic worlds around Synth.01 and Album.01.">
+    <meta name="theme-color" content="#0d0d0d">
     <title>ASE // Alien Sound Engineering</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Scanline overlay -->
-    <div class="scanlines"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="orb orb-a" aria-hidden="true"></div>
+    <div class="orb orb-b" aria-hidden="true"></div>
 
-    <!-- Navigation Menu (for non-technical users) -->
-    <nav class="floating-menu" id="floatingMenu">
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-            <span class="menu-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-        </button>
-        <ul class="menu-items" id="menuItems">
-            <li><a href="#" data-section="home">HOME</a></li>
-            <li><a href="#" data-section="synth">SYNTH.01</a></li>
-            <li><a href="#" data-section="tracks">TRACKS</a></li>
-            <li><a href="#" data-section="manifesto">MANIFESTO</a></li>
-        </ul>
-    </nav>
-
-    <!-- Main Terminal Container -->
-    <div class="terminal-wrapper">
-        <div class="terminal-container">
-            <!-- Terminal Header -->
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <span class="btn-close"></span>
-                    <span class="btn-minimize"></span>
-                    <span class="btn-maximize"></span>
-                </div>
-                <div class="terminal-title">ase@terminal: ~</div>
-                <div class="terminal-header-spacer"></div>
-            </div>
-
-            <!-- Terminal Body -->
-            <div class="terminal-body" id="terminalBody">
-                <!-- Output Area - This scrolls -->
-                <div class="output-area" id="outputArea">
-                    <!-- Content will be dynamically inserted here -->
-                </div>
-
-                <!-- Command Input - Fixed at bottom -->
-                <div class="command-line" id="commandLine">
-                    <span class="prompt">$</span>
-                    <input type="text" class="command-input" id="commandInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type 'help' for commands...">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Glitch overlay for effects -->
-    <div class="glitch-overlay" id="glitchOverlay"></div>
-
-    <!-- Boot screen -->
-    <div class="boot-screen" id="bootScreen">
-        <div class="boot-content">
-            <div class="boot-logo">
-                <pre>───────────  ::ασε~  ──
+    <div class="site-shell">
+        <header class="masthead">
+            <a class="brand" href="#home" aria-label="Alien Sound Engineering home">
+                <pre class="brand-logo">───────────  ::ασε~  ──
 alien sound engineering</pre>
-            </div>
-            <div class="boot-text" id="bootText"></div>
-            <div class="boot-progress">
-                <div class="boot-progress-bar" id="bootProgressBar"></div>
-            </div>
-        </div>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <nav class="site-nav" id="siteNav" aria-label="Primary">
+                <a href="#home" data-route="home">home</a>
+                <div class="nav-group" data-nav-group="technology">
+                    <a href="#technology" data-route="technology">technology</a>
+                    <div class="subnav" id="subnav-technology">
+                        <a href="#technology/synth-01" data-route="technology/synth-01">
+                            <span class="subnav-kicker">subpage</span>
+                            <strong>synth.01</strong>
+                        </a>
+                        <a href="#technology/progsynth" data-route="technology/progsynth">
+                            <span class="subnav-kicker">subpage</span>
+                            <strong>progsynth</strong>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group="music">
+                    <a href="#music" data-route="music">music</a>
+                    <div class="subnav" id="subnav-music">
+                        <a href="#music/album-01" data-route="music/album-01">
+                            <span class="subnav-kicker">subpage</span>
+                            <strong>album.01</strong>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="layout">
+            <section class="content-shell">
+                <div class="ticker" aria-hidden="true">
+                    <div class="ticker-track" id="tickerTrack"></div>
+                </div>
+
+                <section class="hero-strip">
+                    <div>
+                        <p class="eyebrow">transmission / 2026</p>
+                        <h1 class="hero-title">
+                            <span>signal</span>
+                            <span class="muted">sound engineering</span>
+                            <span>music</span>
+                        </h1>
+                    </div>
+                    <p class="hero-copy">
+                        Alien Sound Engineering create <strong>open-source signal manipulation tools</strong>,
+                        and <strong>music</strong>.  Following the signal, shaping it, being shaped by it, to explore alternative spaces that don't yet have names.
+                    </p>
+                </section>
+
+                <article class="page-frame" id="pageFrame">
+                    <div class="page-meta" id="pageMeta"></div>
+                    <div class="page-content is-entering" id="pageContent"></div>
+                </article>
+
+            </section>
+        </main>
     </div>
+
+    <template id="page-home">
+        <section class="page-grid home-grid">
+            <div class="story-block emphasis">
+                <p class="eyebrow">home / transmission</p>
+                <h2>Alien Sound Engineering is a project about <strong>signal generation and manipulation</strong>.</h2>
+                <p>
+                    The <string>signal</string> belongs to everyone.
+                    ASE builds the technology to shape it, and wields it to probe what lies beyond, searching for new frequencies, new targets, new contact.
+                </p>
+                <p>
+                    Every sound that exists is a negotiation between symmetry and collapse.
+                    A sine wave is a perfect agreement, a single frequency repeating itself without contradiction,
+                    a form so balanced it carries no identity. But the moment that symmetry fractures, harmonics appear,
+                    overtones stacking above the fundamental like echoes of a structure trying to remember its own shape.
+                </p>
+                <p>
+                    Phase is the silent axis. Two identical waves, slightly displaced in time,
+                    can reinforce each other into something twice as present, or cancel into nothing.
+                    The universe does not distinguish between construction and erasure, it only reads alignment.
+                    What we call sound design is, at its core, the practice of choosing which alignments to honor
+                    and which to betray. 
+                </p>
+            </div>
+
+        </section>
+    </template>
+
+    <template id="page-technology">
+        <section class="index-list">
+            <a class="index-card" href="#technology/synth-01">
+                <img class="index-card-img" src="img/synth01.jpg" alt="Synth.01">
+                <div class="index-card-text">
+                    <strong class="index-card-title">synth.01</strong>
+                    <span class="index-card-sub">virtual analog subtractive synthesizer</span>
+                </div>
+            </a>
+            <a class="index-card" href="#technology/progsynth">
+                <img class="index-card-img" src="img/progsynth.jpg" alt="ProgSynth">
+                <div class="index-card-text">
+                    <strong class="index-card-title">progsynth</strong>
+                    <span class="index-card-sub">programmable synthesizer with embedded DSL</span>
+                </div>
+            </a>
+        </section>
+    </template>
+
+    <template id="page-synth">
+        <section class="page-grid synth-page">
+            <div class="story-block emphasis">
+                <p class="eyebrow">technology / synth.01</p>
+                <h2><strong>Synth.01</strong> analog subtractive synthesizer.</h2>
+                <p>
+                    <strong>Open-Source</strong>, work as VST3 plugin or in standalone mode. 
+                    It combines <strong>dual anti-aliased oscillators</strong>, a <strong>state-variable filter</strong>,
+                    <strong>dual ADSR envelopes</strong>, a multi-wave <strong>LFO</strong>, integrated <strong>multi-FX</strong>,
+                    preset management. Built on JUCE.
+
+                    <a class="inline-link" href="https://github.com/aliensoundengineering/Synth.01" target="_blank" rel="noopener noreferrer">DOWNLOAD FROM HERE</a><br>
+                </p>
+            </div>
+
+            <figure class="visual-block">
+                <img src="img/synth01.jpg" alt="Synth.01 synthesizer interface">
+                <figcaption>panels, controls, knoobs, routing, all for the signal.</figcaption>
+            </figure>
+
+            <div class="story-block">
+                <p class="eyebrow">control / topology</p>
+                <div class="spec-list">
+                    <div><span>oscillators</span><strong>sine / saw / square, gain, detune, octave</strong></div>
+                    <div><span>filter</span><strong>lp / hp / bp state-variable topology</strong></div>
+                    <div><span>modulation</span><strong>lfo with multiple destinations and depth control</strong></div>
+                    <div><span>envelopes</span><strong>amp adsr + filter adsr per voice</strong></div>
+                    <div><span>effects</span><strong>soft / hard / tube / fuzz, delay, reverb</strong></div>
+                    <div><span>voice count</span><strong>8-voice polyphony</strong></div>
+                </div>
+            </div>
+
+            <div class="story-block wide">
+                <p class="eyebrow">reading / instrument character</p>
+                <pre class="ascii-panel">
+
+
+      -> polyblep oscillators
+      -> filter cutoff / resonance
+      -> envelope movement
+      -> lfo destination control
+      -> drive / distortion
+      -> delay line
+      -> reverb
+      -> output
+    </pre>
+                <p>
+                    The goal of this project is share the signal with everyone. For this reason, you can use it, modify it, and do whatever you want with it. We know you'll use this technology to the fullest and share it with all the means available to help us spread the signal.<br />
+                    The code and the plugin are are freely <a class="inline-link" href="https://github.com/aliensoundengineering/Synth.01" target="_blank" rel="noopener noreferrer">available on GitHub</a><br>
+                </p>
+            </div>
+        </section>
+    </template>
+
+    <template id="page-progsynth">
+        <section class="page-grid synth-page">
+            <div class="story-block emphasis">
+                <p class="eyebrow">technology / progsynth</p>
+                <h2><strong>ProgSynth</strong> programmable synthesizer with embedded DSL.</h2>
+                <p>
+                    <strong>Open-Source</strong>, works as VST3 plugin or in standalone mode.
+                    A <strong>programmable subtractive synthesizer</strong> driven by a typed
+                    <strong>domain-specific language</strong>. Patches are written as code, compiled to
+                    <strong>stack-machine bytecode</strong>, and executed on the audio thread with
+                    no allocations and no exceptions. Built on JUCE.
+
+                    <a class="inline-link" href="https://github.com/aliensoundengineering/ProgSynth" target="_blank" rel="noopener noreferrer">DOWNLOAD FROM HERE</a><br>
+                </p>
+            </div>
+
+            <figure class="visual-block">
+                <img src="img/progsynth.jpg" alt="ProgSynth synthesizer interface">
+                <figcaption>code as patch / bytecode as voice / signal as output.</figcaption>
+            </figure>
+
+            <div class="story-block">
+                <p class="eyebrow">control / topology</p>
+                <div class="spec-list">
+                    <div><span>oscillators</span><strong>three osc, sine / tri / saw / square</strong></div>
+                    <div><span>filter</span><strong>lp / hp with env modulation and key-tracking</strong></div>
+                    <div><span>modulation</span><strong>two lfos, free or tempo-synced, multi-source routing</strong></div>
+                    <div><span>envelopes</span><strong>amp adsr + filter adsr per voice</strong></div>
+                    <div><span>effects</span><strong>dist, eq, comp, chorus, flanger, delay, reverb</strong></div>
+                    <div><span>dsl</span><strong>typed language with hz / ms / semitones / sync units</strong></div>
+                    <div><span>runtime</span><strong>stack-machine bytecode, realtime-safe</strong></div>
+                    <div><span>ide</span><strong>embedded editor, repl, status, spectrum analyzer</strong></div>
+                </div>
+            </div>
+
+            <div class="story-block wide">
+                <p class="eyebrow">reading / instrument character</p>
+                <pre class="ascii-panel">
+
+
+      -> dsl source
+      -> typed compiler
+      -> stack-machine bytecode
+      -> three oscillators
+      -> filter cutoff / resonance
+      -> envelope movement
+      -> dual lfo routing
+      -> fx chain
+      -> output
+    </pre>
+                <p>
+                    ProgSynth treats the patch as a program. The instrument is the language,
+                    the language is the signal. You write, you compile, you hear, you iterate.
+                    Free to use, modify, and redistribute. Bend the grammar, share the dialect.<br />
+                    The code and the plugin are freely <a class="inline-link" href="https://github.com/aliensoundengineering/ProgSynth" target="_blank" rel="noopener noreferrer">available on GitHub</a><br>
+                </p>
+            </div>
+        </section>
+    </template>
+
+    <template id="page-music">
+        <section class="index-list">
+            <a class="index-card" href="#music/album-01">
+                <img class="index-card-img" src="img/Album.01.jpg" alt="Album.01">
+                <div class="index-card-text">
+                    <strong class="index-card-title">album.01</strong>
+                    <span class="index-card-sub">speed, heat and forward motion</span>
+                </div>
+            </a>
+        </section>
+    </template>
+
+    <template id="page-album">
+        <section class="page-grid album-page">
+            <div class="story-block emphasis">
+                <p class="eyebrow">music / album.01</p>
+                <h2><strong>Album.01</strong></h2>
+                <p>
+                    A transmission drifts in from the far side of sleep: a lattice of alien atmospheres, hand-shaped tones, and voltage-borne dust, all suspended in a sky that never fully resolves.
+                    The machine is shaping the signal as it moves, bending code into an architecture of emotions.
+                </p>
+            </div>
+
+            <figure class="visual-block">
+                <img src="img/Album.01.jpg" alt="Album.01 cover art">
+                <figcaption>gold horizon / black machine / straight-line acceleration</figcaption>
+            </figure>
+
+            <div class="story-block">
+                <p class="eyebrow">tracks / readout</p>
+                <pre class="ascii-panel">
+                    
+zero.one
+zero.two
+zero.three
+zero.four
+zero.five
+
+</pre>
+                <p>
+                    Five tracks. List completed.
+            </div>
+
+            <div class="story-block">
+                <p class="eyebrow">position / role</p>
+                <p>
+                    Album.01 is available for streaming on all major platform and for buying on iTunes.
+                </p>
+                <a class="inline-link" href="https://open.spotify.com/intl-it/album/14cYRWAghCFhmvuVVKOaOC" target="_blank" rel="noopener noreferrer">Listen on Spotify</a><br>
+                <a class="inline-link" href="https://music.youtube.com/playlist?list=OLAK5uy_l2Fn3fNCzcfE4QPY58sc4V7ywBNlDKomQ" target="_blank" rel="noopener noreferrer">Listen on Youtube Musicy</a><br>
+                <a class="inline-link" href="https://music.apple.com/ie/album/album-01-ep/1884006998" target="_blank" rel="noopener noreferrer">Listen on Apple Music</a><br>
+            </div>
+        </section>
+    </template>
 
     <script src="script.js"></script>
 </body>
